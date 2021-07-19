@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/authenticate.js';
+import startupRoutes from './routes/startup.js';
+import searchRoutes from './routes/search.js'
 
 const app = express();
 
@@ -10,7 +11,8 @@ app.use(express.urlencoded({
 
 app.use(cors());
 
-app.use("/startup", authRoutes);
+app.use("/startup", startupRoutes);
+app.use("/search", searchRoutes);
 
 app.get("/", async (req,res) => {
     res.write('This is a MERN stack project to track covid 19');

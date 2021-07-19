@@ -8,8 +8,9 @@ class India extends Component {
         super(props);
         this.state = { 
             initialData: "",
-            // data: "",
+            searchData: "",
             value: "",
+            searchDataFound: "",
             dataConfirmedCases: "",
             dataActiveCases: "",
             dataRecoveredCases: "",
@@ -48,6 +49,97 @@ class India extends Component {
         console.log(this.state.initialData);
     }
 
+    findStateCode(){
+        console.log("find state code");
+        const stateToBeSearched = this.state.value;
+        var stateCodeToBeSearched = "";
+        var isFound=0;
+        const stateCodes = {
+            "Andaman and Nicobar Islands": "AN",
+            "Andhra Pradesh": "AP",
+            "Arunachal Pradesh": "AR",
+            "Assam": "AS",
+            "Bihar": "BR",
+            "Chandigarh": "CH",
+            "Dadra and Nagar Haveli": "DN",
+            "Daman and Diu": "DD",
+            "Delhi": "DL",
+            "Goa": "GA",
+            "Gujarat": "GJ",
+            "Haryana": "HR",
+            "Himachal Pradesh": "HP",
+            "Jammu and Kashmir": "JK",
+            "Jharkhand": "JH",
+            "Karnataka": "KA",
+            "Kerala":	"KL",
+            "Lakshadweep": "LD",
+            "Madhya Pradesh": "MP",
+            "Maharashtra": "MH",
+            "Manipur": "MN",
+            "Meghalaya": "ML",
+            "Mizoram":	"MZ",
+            "Nagaland":	"NL",
+            "Odisha": "OR",
+            "Puducherry": "PY",
+            "Punjab": "PB",
+            "Rajasthan": "RJ",
+            "Sikkim": "SK",
+            "Tamil Nadu": "TN",
+            "Telangana": "TG",
+            "Tripura": "TR",
+            "Uttar Pradesh": "UP",
+            "Uttarakhand": "UT",
+            "West Bengal":	"WB"
+        }
+
+        for(const [key, value] of Object.entries(stateCodes)){
+            if(stateToBeSearched.toLowerCase() === key.toLowerCase()){
+                stateCodeToBeSearched = value;
+                console.log(value);
+                isFound = 1;
+                break;
+            }
+        }
+
+        this.setState({
+            searchDataFound: isFound
+        })
+
+        return stateCodeToBeSearched
+
+    }
+
+    calcValues(totalDataOfPlace){
+        const dataConfirmedCases = totalDataOfPlace["confirmed"];
+        const dataRecoveredCases = totalDataOfPlace["recovered"];
+        const dataDeathCases = totalDataOfPlace["deceased"];
+        const dataActiveCases = dataConfirmedCases - dataRecoveredCases - dataDeathCases;
+
+        this.setState({
+            dataConfirmedCases,
+            dataActiveCases,
+            dataRecoveredCases,
+            dataDeathCases
+        })
+    }
+
+    findSearchDataFromState(stateCode){
+        const totalDataOfPlace = this.state.searchData[stateCode]["total"];
+
+        this.calcValues(totalDataOfPlace);
+
+    }
+
+    findSearchData(){
+        console.log("finding search data");
+        const stateCode = this.findStateCode();
+
+        if(stateCode !== ""){
+            this.findSearchDataFromState(stateCode);
+        }
+
+    }
+
     async handelSubmit(event){
         event.preventDefault();
         console.log("handel submit");
@@ -55,10 +147,13 @@ class India extends Component {
         const { data } = await indiaSubmit();
         console.log(data);
         this.setState({
-            data
+            searchData: data
         })
 
-        console.log(this.state.data);
+        this.findSearchData();
+
+
+        // console.log(this.state.data);
     }
 
     handelChange(event) {
