@@ -1,0 +1,29 @@
+.data {
+  text-align: center;
+}
+
+.statistics {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.data, 
+.statistics{
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.type {
+  margin-bottom: 3rem;
+}
+
+.a-cases,
+.r-cases,
+.d-cases,
+.c-cases {
+  padding: 0; 
+}
+
+.data-block {
+  margin-top: 13rem;
+}
