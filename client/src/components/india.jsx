@@ -53,7 +53,7 @@ class India extends Component {
         console.log("find state code");
         const stateToBeSearched = this.state.value;
         var stateCodeToBeSearched = "";
-        var isFound=0;
+        var isFound = 0;
         const stateCodes = {
             "Andaman and Nicobar Islands": "AN",
             "Andhra Pradesh": "AP",

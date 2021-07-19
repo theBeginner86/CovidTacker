@@ -7,8 +7,10 @@ class World extends Component {
     constructor(props){
         super(props);
         this.state = { 
-            data: "",
+            initialData: "",
+            searchData: "",
             value: "",
+            searchDataFound: "",
             dataConfirmedCases: "",
             dataActiveCases: "",
             dataRecoveredCases: "",
@@ -25,18 +27,18 @@ class World extends Component {
     }
 
     async recieveData(){
-        console.log(this.state.data);
+        console.log(this.state.initialData);
         console.log("receive Data");
         const { data } = await worldInitialize();
         console.log(data);
         this.setState({
-            data
+            initialData: data
         })
 
-        const dataConfirmedCases = this.state.data.cases;
-        const dataActiveCases = this.state.data.active;
-        const dataRecoveredCases = this.state.data.recovered;
-        const dataDeathCases = this.state.data.deaths;
+        const dataConfirmedCases = this.state.initialData.cases;
+        const dataActiveCases = this.state.initialData.active;
+        const dataRecoveredCases = this.state.initialData.recovered;
+        const dataDeathCases = this.state.initialData.deaths;
 
         this.setState({
             dataConfirmedCases,
@@ -48,16 +50,67 @@ class World extends Component {
         console.log(this.state.data);
     }
 
+    findSearchCountryTotalData(){
+        console.log("finding search country");
+        var isFound = 0;
+        var countryTotalDataToBeSearch = "";
+        for(var i=0; i<this.state.searchData.length; i++){
+            var currentCountryTotalData = this.state.searchData[i];
+            var currentCountryName = currentCountryTotalData["country"];
+            if(currentCountryName.toLowerCase() === this.state.value.toLowerCase()){
+                isFound = 1;
+                countryTotalDataToBeSearch = currentCountryTotalData;
+                break;
+            }
+        }
+        // for(const [key, value] of Object.entries(this.state.searchData)){
+        //     if(key.toLowerCase() === this.state.value){
+        //         isFound = 1;
+        //         countryTotalDataToBeSearch = value;
+        //         break;
+        //     }
+        // }
+
+        this.setState({
+            searchDataFound: isFound
+        })
+
+        return countryTotalDataToBeSearch;
+    }
+
+    findSearchData(){
+        console.log("finding search data");
+        
+        const totalDataOfPlace = this.findSearchCountryTotalData();
+
+        if(totalDataOfPlace !== ""){
+            const dataConfirmedCases = totalDataOfPlace["cases"];
+            const dataRecoveredCases = totalDataOfPlace["recovered"];
+            const dataDeathCases = totalDataOfPlace["deaths"];
+            const dataActiveCases = totalDataOfPlace["active"];
+
+            this.setState({
+                dataConfirmedCases,
+                dataActiveCases,
+                dataRecoveredCases,
+                dataDeathCases
+            })
+        }
+
+    }
+
     async handelSubmit(event){
         event.preventDefault();
-        console.log(this.state.data);
+        console.log(this.state.searchData);
         console.log("handel submit");
         const { data } = await worldSubmit();
         console.log(data);
         this.setState({
-            data: data
+            searchData: data
         })
-        console.log(this.state.data);
+        
+        this.findSearchData();
+
     }
 
     handelChange(event) {
